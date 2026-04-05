@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { globalLimiter } from './middlewares/rateLimiter';
 import { errorHandler } from './middlewares/errorHandler';
 import authRouter from './modules/auth/auth.router';
+import usersRouter from './modules/users/users.router';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
 
 // Health check
 app.get('/health', (_req, res) => {
