@@ -7,6 +7,7 @@ import { globalLimiter } from './middlewares/rateLimiter';
 import { errorHandler } from './middlewares/errorHandler';
 import authRouter from './modules/auth/auth.router';
 import usersRouter from './modules/users/users.router';
+import recordsRouter from './modules/records/records.router';
 
 const app = express();
 
@@ -23,12 +24,12 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
-
+app.use('/api/records', recordsRouter);
 // Health check
 app.get('/health', (_req, res) => {
   res.json({
     success: true,
-    message: 'Finance Dashboard API is running 🚀',
+    message: 'API is healthy',
     timestamp: new Date().toISOString(),
   });
 });
