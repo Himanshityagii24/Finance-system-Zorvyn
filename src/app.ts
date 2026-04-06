@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { globalLimiter } from './middlewares/rateLimiter';
 import { errorHandler } from './middlewares/errorHandler';
+import { setupSwagger } from './config/swagger';
 import authRouter from './modules/auth/auth.router';
 import usersRouter from './modules/users/users.router';
 import recordsRouter from './modules/records/records.router';
@@ -13,7 +14,7 @@ import dashboardRouter from './modules/dashboard/dashboard.router';
 const app = express();
 
 // Security & logging
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(morgan('dev'));
 app.use(globalLimiter);
@@ -34,18 +35,12 @@ app.get('/health', (_req, res) => {
     success: true,
     message: 'Finance Dashboard API is running 🚀',
     timestamp: new Date().toISOString(),
+    docs: 'http://localhost:3000/api/docs',
   });
 });
 
-// Debug route — test prisma directly
-app.get('/debug/test', async (_req, res) => {
-  try {
-    const count = await (await import('./config/prisma')).prisma.financialRecord.count();
-    res.json({ success: true, recordCount: count });
-  } catch (err: any) {
-    res.json({ success: false, error: err.message });
-  }
-});
+// Swagger docs
+setupSwagger(app);
 
 // 404 handler
 app.use((_req, res) => {
