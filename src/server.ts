@@ -3,6 +3,14 @@ import app from './app';
 import { config } from './config/env';
 import { prisma } from './config/prisma';
 
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION:', err);
+});
+
 const start = async () => {
   try {
     await prisma.$connect();

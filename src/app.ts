@@ -27,13 +27,24 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/records', recordsRouter);
 app.use('/api/dashboard', dashboardRouter);
+
 // Health check
 app.get('/health', (_req, res) => {
   res.json({
     success: true,
-    message: 'API is healthy',
+    message: 'Finance Dashboard API is running 🚀',
     timestamp: new Date().toISOString(),
   });
+});
+
+// Debug route — test prisma directly
+app.get('/debug/test', async (_req, res) => {
+  try {
+    const count = await (await import('./config/prisma')).prisma.financialRecord.count();
+    res.json({ success: true, recordCount: count });
+  } catch (err: any) {
+    res.json({ success: false, error: err.message });
+  }
 });
 
 // 404 handler
@@ -41,7 +52,7 @@ app.use((_req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
 
-// Global error handler 
+// Global error handler
 app.use(errorHandler);
 
 export default app;
